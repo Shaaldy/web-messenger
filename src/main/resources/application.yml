@@ -9,7 +9,6 @@ spring:
             client-name: Yandex
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/yandex
-            scope: openid, email
             client-authentication-method: post
         provider:
           yandex:
