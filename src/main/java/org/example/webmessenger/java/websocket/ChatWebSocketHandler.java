@@ -29,17 +29,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         try {
             Principal principal = (Principal) session.getAttributes().get("user");
 
+
             if (principal instanceof OAuth2AuthenticationToken auth) {
                 String login = auth.getPrincipal().getAttribute("email");
-                System.out.println("✔ Подключён пользователь: " + login);
+                String avatarUrl = auth.getPrincipal().getAttribute("picture");
+                session.getAttributes().put("avatar", avatarUrl);
+                log.info("✔ Подключён пользователь: " + login);
                 loginToSession.put(login, session);
                 session.getAttributes().put("login", login);
             } else {
-                System.out.println("⚠ Principal не является OAuth2AuthenticationToken: " + principal);
+                log.error("⚠ Principal не является OAuth2AuthenticationToken: " + principal);
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Ошибка в afterConnectionEstablished: " + e.getMessage());
+            log.error("❌ Ошибка в afterConnectionEstablished: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -57,21 +60,23 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         try {
             ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
             String fromLogin = (String) session.getAttributes().get("login");
+            String fromAvatar = (String) session.getAttributes().get("avatar");
+            log.info("Get avatar: " + fromAvatar);
+            log.info("From login: " + fromLogin);
             chatMessage.setFromLogin(fromLogin);
-
+            chatMessage.setFromAvatar(fromAvatar);
             String toLogin = chatMessage.getToLogin();
             WebSocketSession recipient = loginToSession.get(toLogin);
 
             if (recipient != null && recipient.isOpen()) {
                 recipient.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
             } else {
-                System.out.println("Получатель не найден или сессия закрыта: " + toLogin);
+                log.error("Получатель не найден или сессия закрыта: " + toLogin);
             }
         } catch (Exception e) {
-            System.err.println("❌ Ошибка в handleTextMessage: " + e.getMessage());
+            log.error("❌ Ошибка в handleTextMessage: " + e.getMessage());
             e.printStackTrace();
             throw e; // чтобы Spring закрыл корректно
         }
     }
-
 }

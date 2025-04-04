@@ -12,6 +12,6 @@ public class ChatMessage {
     private String fromLogin;
     private String toLogin;
     private String content;
+    private String fromAvatar;
     private MessageType type;
-
 }
