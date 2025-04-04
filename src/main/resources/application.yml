@@ -12,4 +12,10 @@ spring:
               - email
         provider:
           google:
-            issuer-uri: https://accounts.google.com
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+            user-name-attribute: email
+server:
+  servlet:
+    context-path: /
