@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessage {
-    private String fromUserId;
-    private String fromUserName;
+    private String fromLogin;
+    private String toLogin;
     private String content;
-    private MessageType messageType;
+    private MessageType type;
+
 }
