@@ -3,7 +3,7 @@ const dialogs = new Map();
 const avatars = new Map();
 let currentLogin = null;
 
-const myLogin = localStorage.getItem("myLogin") || prompt("Введите ваш логин (email):");
+const myLogin = localStorage.getItem("myLogin");
 localStorage.setItem("myLogin", myLogin);
 
 socket.onmessage = function (event) {
